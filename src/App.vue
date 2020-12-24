@@ -35,7 +35,8 @@
     <section class="chat-box" id="chat-box">
       <div
         v-for="message in state.messages"
-        :key="message.key"
+        :key="'key' + message.id"
+        :id="'id' + message.id"
         :style="{ marginTop: message.displayTime ? '30px' : '15px' }"
       >
         <span v-if="message.displayTime" class="time">{{ message.time }}</span>
@@ -53,6 +54,27 @@
       </div>
     </section>
 
+    <div class="quick-scroll">
+      <div class="btn" @click="ScrollTo('top')">
+        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" p-id="1746" width="30" height="30">
+          <path
+            d="M1021.28261 737.254254 512.697383 228.665956 4.114203 737.254254 65.145208 798.285259 512.697383 350.727966 960.251605 798.280142Z"
+            p-id="1747"
+            fill="rgba(255, 255, 255, 0.8)"
+          ></path>
+        </svg>
+      </div>
+      <div class="btn" @click="ScrollTo('bottom')">
+        <svg viewBox="0 0 1025 1024" xmlns="http://www.w3.org/2000/svg" p-id="1891" width="30" height="30">
+          <path
+            d="M1.023306 298.788014 512.531096 810.298873 1024.036839 298.79006 962.65484 237.408061 512.531096 687.535899 62.405305 237.410108Z"
+            p-id="1892"
+            fill="rgba(255, 255, 255, 0.8)"
+          ></path>
+        </svg>
+      </div>
+    </div>
+
     <footer>
       <form action="" @submit.prevent="SendMessage">
         <input type="text" v-model="inputMessage" placeholder="Write a message..." />
@@ -65,6 +87,7 @@
 <script>
 import { reactive, onMounted, ref } from 'vue';
 import db from './db';
+import $ from 'jquery';
 
 export default {
   setup() {
@@ -74,7 +97,7 @@ export default {
     const state = reactive({
       username: '',
       messages: [],
-      themeColor: '#f2a6d6',
+      themeColor: 'rgb(179, 166, 242)',
     });
 
     const Login = () => {
@@ -275,6 +298,38 @@ export default {
       return `#${f(0)}${f(8)}${f(4)}`;
     };
 
+    const ScrollTo = (positionName) => {
+      if (positionName === 'top') {
+        setTimeout(() => {
+          window.scrollTo({
+            left: 0,
+            top: 0,
+            behavior: 'smooth',
+          });
+        }, 50);
+      } else if (positionName === 'bottom') {
+        setTimeout(() => {
+          window.scrollTo({
+            left: 0,
+            top: document.body.scrollHeight || document.documentElement.scrollHeight,
+            behavior: 'smooth',
+          });
+        }, 50);
+      }
+    };
+
+    window.addEventListener('scroll', () => resetOpacity());
+
+    const resetOpacity = () => {
+      // state.messages.forEach(element);
+      $('.message').each(function() {
+        var scrollTop = $(window).scrollTop(),
+          elementOffset = $(this).offset().top,
+          distance = elementOffset - scrollTop;
+        $(this).css('opacity', distance / 200 + 0.3);
+      });
+    };
+
     return {
       inputUsername,
       state,
@@ -283,6 +338,7 @@ export default {
       SendMessage,
       Logout,
       ChangeThemeColor,
+      ScrollTo,
     };
   },
 };

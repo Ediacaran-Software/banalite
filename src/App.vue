@@ -326,7 +326,9 @@ export default {
         var scrollTop = $(window).scrollTop(),
           elementOffset = $(this).offset().top,
           distance = elementOffset - scrollTop;
-        $(this).css('opacity', distance / 200 + 0.3);
+        $(this).css('opacity', distance / 300 + 0.2);
+        // $(this).css('margin-left', distance > 160 ? 0 : (160 - distance) / 8);
+        // $(this).css('margin-right', distance > 160 ? 0 : (160 - distance) / 8);
       });
     };
 

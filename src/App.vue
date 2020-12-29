@@ -180,6 +180,7 @@
 <script>
 /**
  * TODO for improvement
+ * add emoji panel!
  * done - hide user names if previous message was sent by the same user
  * delt - add random avatar, assign by calculate username
  * done - chat-room code
@@ -196,7 +197,7 @@ export default {
     const inputChatroomCode = ref('');
     const inputMessage = ref('');
 
-    var localThemeColor = 'rgb(205, 166, 242)';
+    var localThemeColor = 'rgb(182, 166, 242)';
     if (typeof Storage !== 'undefined') {
       // Code for localStorage/sessionStorage.
       localThemeColor =

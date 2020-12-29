@@ -288,6 +288,7 @@ export default {
         }
 
         state.messages = messages;
+
         scrollToBottom();
       });
     };

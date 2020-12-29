@@ -1,4 +1,7 @@
-# banalite
+# Bavard
+
+a chat app
+see demo at banalite.netlify.app
 
 ## Project setup
 ```

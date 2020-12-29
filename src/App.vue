@@ -7,10 +7,24 @@
     <!-- directive modifier -->
     <form action="" class="login-form" @submit.prevent="Login">
       <div class="form-inner">
-        <h1>Login to Banalite</h1>
+        <h1>Login to Bavard</h1>
         <label for="username">Username</label>
-        <input type="text" v-model="inputUsername" placeholder="Please enter your username" />
-        <input type="submit" value="Login" :style="{ backgroundColor: state.themeColor }" />
+        <input
+          type="text"
+          v-model="inputUsername"
+          placeholder="Please enter your username"
+        />
+        <label for="chatroomCode">Chat room code</label>
+        <input
+          type="text"
+          v-model="inputChatroomCode"
+          placeholder="Please enter 4-digit chat room code"
+        />
+        <input
+          type="submit"
+          value="Login"
+          :style="{ backgroundColor: state.themeColor }"
+        />
       </div>
     </form>
   </div>
@@ -18,8 +32,15 @@
   <div class="view chat" :style="{ backgroundColor: state.themeColor }" v-else>
     <header>
       <button class="logout" @click="Logout">Logout</button>
+      <h3 class="room-code">Room{{ state.chatroomCode }}</h3>
       <button class="change-color" @click="ChangeThemeColor">
-        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="white">
+        <svg
+          viewBox="0 0 1024 1024"
+          xmlns="http://www.w3.org/2000/svg"
+          width="20"
+          height="20"
+          fill="white"
+        >
           <path
             d="M465.499307 1021.354667c-21.504 0-44.117333-2.048-68.693334-5.12l-6.144-1.024c-174.336-26.624-293.290667-195.925333-298.410666-203.093334C-76.026027 555.776 8.11264 296.277333 167.08864 152.661333 325.04064 9.045333 588.635307-52.48 819.37664 133.205333c148.736 119.978667 193.877333 286.122667 195.925333 293.290667v2.048c21.504 116.906667 4.096 203.093333-52.309333 258.474667-86.186667 83.114667-228.693333 56.405333-248.234667 52.309333-26.709333-3.072-46.165333 5.12-60.501333 22.528-15.36 19.456-18.432 45.141333-13.312 60.501333 14.336 43.093333 16.384 75.861333 6.144 100.522667-29.781333 64.682667-90.282667 98.474667-181.589333 98.474667z m-65.621334-67.669334l6.144 1.024c99.498667 15.36 160-4.096 184.576-59.477333 0-1.024 5.12-14.336-8.192-55.381333-13.312-36.949333-3.072-85.162667 23.552-117.930667 27.733333-34.901333 68.693333-50.261333 116.906667-45.141333l3.072 1.024c1.024 0 128.170667 27.648 193.877333-35.925334 40.021333-38.997333 52.309333-106.666667 34.901334-201.045333-4.096-13.312-48.213333-157.952-175.36-259.498667C578.309973 17.322667 347.56864 71.68 208.04864 197.802667 79.877973 314.709333-14.500693 537.258667 143.451307 778.325333c1.024 0 108.714667 153.856 256.426666 175.36z m0 0"
             p-id="4972"
@@ -33,19 +54,71 @@
       <h1>Welcome, {{ state.username }}</h1>
     </header>
     <section class="chat-box" id="chat-box">
+      <div v-if="state.messages.length === 0">
+        <div class="message">
+          <div class="message-inner">
+            <div class="content">
+              Welcome to BAVARD! 😺 Start your chat with your friends by sharing
+              the 4-digits room code to them! <br />
+              Room code:
+              {{ state.chatroomCode }}
+            </div>
+          </div>
+        </div>
+      </div>
       <div
-        v-for="message in state.messages"
+        v-for="(message, index) in state.messages"
         :key="'key' + message.id"
         :id="'id' + message.id"
         :style="{ marginTop: message.displayTime ? '30px' : '15px' }"
       >
         <span v-if="message.displayTime" class="time">{{ message.time }}</span>
-        <div :class="message.username == state.username ? 'message current-user' : 'message'">
+        <div
+          :class="
+            message.username === state.username
+              ? 'message current-user'
+              : 'message'
+          "
+        >
           <div class="message-inner">
-            <div class="username">{{ message.username }}</div>
+            <div
+              class="user-info"
+              v-if="
+                index === 0
+                  ? true
+                  : state.messages[index - 1].username !== message.username
+              "
+              :style="{
+                justifyContent:
+                  message.username !== state.username
+                    ? 'flex-start'
+                    : 'flex-end',
+              }"
+            >
+              <div
+                v-if="message.username !== state.username"
+                class="avatar"
+                :style="{ backgroundColor: '#888' }"
+              >
+                <span>{{ message.username.slice(0, 1) }}</span>
+              </div>
+              <div class="username">{{ message.username }}</div>
+              <!-- <div
+								v-if="message.username === state.username"
+								class="avatar"
+								:style="{ backgroundColor: state.themeColor }"
+							>
+								<span>{{ message.username.slice(0, 1) }}</span>
+							</div> -->
+            </div>
             <div
               class="content"
-              :style="{ backgroundColor: message.username == state.username ? state.themeColor : '#f3f3f3' }"
+              :style="{
+                backgroundColor:
+                  message.username == state.username
+                    ? state.themeColor
+                    : '#f3f3f3',
+              }"
             >
               {{ message.content }}
             </div>
@@ -56,7 +129,13 @@
 
     <div class="quick-scroll">
       <div class="btn" @click="ScrollTo('top')">
-        <svg viewBox="0 0 1024 1024" xmlns="http://www.w3.org/2000/svg" p-id="1746" width="30" height="30">
+        <svg
+          viewBox="0 0 1024 1024"
+          xmlns="http://www.w3.org/2000/svg"
+          p-id="1746"
+          width="30"
+          height="30"
+        >
           <path
             d="M1021.28261 737.254254 512.697383 228.665956 4.114203 737.254254 65.145208 798.285259 512.697383 350.727966 960.251605 798.280142Z"
             p-id="1747"
@@ -65,7 +144,13 @@
         </svg>
       </div>
       <div class="btn" @click="ScrollTo('bottom')">
-        <svg viewBox="0 0 1025 1024" xmlns="http://www.w3.org/2000/svg" p-id="1891" width="30" height="30">
+        <svg
+          viewBox="0 0 1025 1024"
+          xmlns="http://www.w3.org/2000/svg"
+          p-id="1891"
+          width="30"
+          height="30"
+        >
           <path
             d="M1.023306 298.788014 512.531096 810.298873 1024.036839 298.79006 962.65484 237.408061 512.531096 687.535899 62.405305 237.410108Z"
             p-id="1892"
@@ -77,14 +162,30 @@
 
     <footer>
       <form action="" @submit.prevent="SendMessage">
-        <input type="text" v-model="inputMessage" placeholder="Write a message..." />
-        <input type="submit" value="Send" :style="{ backgroundColor: state.themeColor }" />
+        <input
+          type="text"
+          v-model="inputMessage"
+          placeholder="Write a message..."
+        />
+        <input
+          type="submit"
+          value="Send"
+          :style="{ backgroundColor: state.themeColor }"
+        />
       </form>
     </footer>
   </div>
 </template>
 
 <script>
+/**
+ * TODO for improvement
+ * done - hide user names if previous message was sent by the same user
+ * delt - add random avatar, assign by calculate username
+ * done - chat-room code
+ * done - if no messages: welcome to bavard! start your chat right now
+ */
+
 import { reactive, onMounted, ref } from 'vue';
 import db from './db';
 import $ from 'jquery';
@@ -92,19 +193,47 @@ import $ from 'jquery';
 export default {
   setup() {
     const inputUsername = ref('');
+    const inputChatroomCode = ref('');
     const inputMessage = ref('');
+
+    var localThemeColor = 'rgb(205, 166, 242)';
+    if (typeof Storage !== 'undefined') {
+      // Code for localStorage/sessionStorage.
+      localThemeColor =
+        localStorage.getItem('bavard-themeColor') === undefined
+          ? localThemeColor
+          : localStorage.getItem('bavard-themeColor');
+    } else {
+      // Sorry! No Web Storage support..
+    }
 
     const state = reactive({
       username: '',
+      chatroomCode: '',
       messages: [],
-      themeColor: 'rgb(179, 166, 242)',
+      themeColor: localThemeColor,
     });
 
     const Login = () => {
-      if (inputUsername.value !== '' || inputUsername.value !== null) {
+      console.log('"', inputUsername.value, '"', inputChatroomCode.value);
+      if (
+        inputUsername.value !== '' &&
+        inputUsername.value !== null &&
+        inputChatroomCode.value !== '' &&
+        inputChatroomCode.value !== null &&
+        validateChatroomCode(inputChatroomCode.value)
+      ) {
         state.username = inputUsername.value;
+        state.chatroomCode = inputChatroomCode.value;
         inputUsername.value = '';
+        inputChatroomCode.value = '';
       }
+
+      loadMessages();
+    };
+
+    const validateChatroomCode = (string) => {
+      return /\d{4}$/.test(string);
     };
 
     const Logout = () => {
@@ -112,8 +241,8 @@ export default {
     };
 
     const SendMessage = () => {
-      const messageRef = db.database().ref('messages-2');
-
+      const messageRef = db.database().ref(`messages-${state.chatroomCode}`);
+      console.log(state.chatroomCode);
       if (inputMessage.value === '' || inputMessage.value === null) {
         return;
       }
@@ -128,18 +257,25 @@ export default {
       inputMessage.value = '';
     };
 
-    onMounted(() => {
-      const messageRef = db.database().ref('messages-2');
-
+    const loadMessages = () => {
+      state.messages = [];
+      const messageRef = db.database().ref(`messages-${state.chatroomCode}`);
+      console.log(state.chatroomCode);
       messageRef.on('value', (snapshot) => {
         const data = snapshot.val();
+        if (data == null || data == undefined) {
+          return;
+        }
         let messages = [];
         const keys = Object.keys(snapshot.val());
         for (let i = 0; i < keys.length; i++) {
           const key = keys[i];
 
           // TODO check if need to display time before this element
-          const displayTime = i === 0 ? true : data[keys[i]].time - data[keys[i - 1]].time > 300000;
+          const displayTime =
+            i === 0
+              ? true
+              : data[keys[i]].time - data[keys[i - 1]].time > 300000;
 
           messages.push({
             id: key,
@@ -151,24 +287,71 @@ export default {
         }
 
         state.messages = messages;
-        scrollToBottom();
+        // scrollToBottom();
       });
-    });
+    };
+
+    // onMounted(() => {
+    // 	const messageRef = db.database().ref(`messages-2`);
+    // 	console.log(state.chatroomCode);
+    // 	messageRef.on('value', (snapshot) => {
+    // 		const data = snapshot.val();
+    // 		// if (data == null || data == undefined) {
+    // 		// 	return;
+    // 		// }
+    // 		let messages = [];
+    // 		const keys = Object.keys(snapshot.val());
+    // 		for (let i = 0; i < keys.length; i++) {
+    // 			const key = keys[i];
+
+    // 			// TODO check if need to display time before this element
+    // 			const displayTime =
+    // 				i === 0
+    // 					? true
+    // 					: data[keys[i]].time - data[keys[i - 1]].time > 300000;
+
+    // 			messages.push({
+    // 				id: key,
+    // 				username: data[key].username,
+    // 				content: data[key].content,
+    // 				time: getDateString(data[key].time),
+    // 				displayTime: displayTime,
+    // 			});
+    // 		}
+
+    // 		state.messages = messages;
+    // 		scrollToBottom();
+    // 	});
+    // });
 
     const getDateString = (previousTime) => {
       var result = '';
       const currentTime = Date.now();
 
-      if (DateDiff.inMinutes(new Date(previousTime), new Date(currentTime)) < 5) {
+      if (
+        DateDiff.inMinutes(new Date(previousTime), new Date(currentTime)) < 5
+      ) {
         result = 'just now';
-      } else if (DateDiff.inMinutes(new Date(previousTime), new Date(currentTime)) < 60) {
-        result = DateDiff.inMinutes(new Date(previousTime), new Date(currentTime)) + ' mins ago';
-      } else if (DateDiff.inHours(new Date(previousTime), new Date(currentTime)) < 24) {
+      } else if (
+        DateDiff.inMinutes(new Date(previousTime), new Date(currentTime)) < 60
+      ) {
+        result =
+          DateDiff.inMinutes(new Date(previousTime), new Date(currentTime)) +
+          ' mins ago';
+      } else if (
+        DateDiff.inHours(new Date(previousTime), new Date(currentTime)) < 24
+      ) {
         result = new Date(previousTime).customFormat('#hhh#:#mm#');
-      } else if (DateDiff.inDays(new Date(previousTime), new Date(currentTime)) < 7) {
+      } else if (
+        DateDiff.inDays(new Date(previousTime), new Date(currentTime)) < 7
+      ) {
         result = new Date(previousTime).customFormat('#DDD# #hhh#:#mm#');
-      } else if (DateDiff.inYears(new Date(previousTime), new Date(currentTime)) > 0) {
-        result = new Date(previousTime).customFormat('#YYYY# #MMM# #DD# #hhh#:#mm#');
+      } else if (
+        DateDiff.inYears(new Date(previousTime), new Date(currentTime)) > 0
+      ) {
+        result = new Date(previousTime).customFormat(
+          '#YYYY# #MMM# #DD# #hhh#:#mm#'
+        );
       } else {
         result = new Date(previousTime).customFormat('#MMM# #DD# #hhh#:#mm#');
       }
@@ -216,7 +399,28 @@ export default {
     //*** This code is copyright 2002-2016 by Gavin Kistner, !@phrogz.net
     //*** It is covered under the license viewable at http://phrogz.net/JS/_ReuseLicense.txt
     Date.prototype.customFormat = function(formatString) {
-      var YYYY, YY, MMMM, MMM, MM, M, DDDD, DDD, DD, D, hhhh, hhh, hh, h, mm, m, ss, s, ampm, AMPM, dMod, th;
+      var YYYY,
+        YY,
+        MMMM,
+        MMM,
+        MM,
+        M,
+        DDDD,
+        DDD,
+        DD,
+        D,
+        hhhh,
+        hhh,
+        hh,
+        h,
+        mm,
+        m,
+        ss,
+        s,
+        ampm,
+        AMPM,
+        dMod,
+        th;
       YY = ((YYYY = this.getFullYear()) + '').slice(-2);
       MM = (M = this.getMonth() + 1) < 10 ? '0' + M : M;
       MMM = (MMMM = [
@@ -234,10 +438,25 @@ export default {
         'December',
       ][M - 1]).substring(0, 3);
       DD = (D = this.getDate()) < 10 ? '0' + D : D;
-      DDD = (DDDD = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][
-        this.getDay()
-      ]).substring(0, 3);
-      th = D >= 10 && D <= 20 ? 'th' : (dMod = D % 10) == 1 ? 'st' : dMod == 2 ? 'nd' : dMod == 3 ? 'rd' : 'th';
+      DDD = (DDDD = [
+        'Sunday',
+        'Monday',
+        'Tuesday',
+        'Wednesday',
+        'Thursday',
+        'Friday',
+        'Saturday',
+      ][this.getDay()]).substring(0, 3);
+      th =
+        D >= 10 && D <= 20
+          ? 'th'
+          : (dMod = D % 10) == 1
+          ? 'st'
+          : dMod == 2
+          ? 'nd'
+          : dMod == 3
+          ? 'rd'
+          : 'th';
       formatString = formatString
         .replace('#YYYY#', YYYY)
         .replace('#YY#', YY)
@@ -275,7 +494,8 @@ export default {
       setTimeout(() => {
         window.scrollTo({
           left: 0,
-          top: document.body.scrollHeight || document.documentElement.scrollHeight,
+          top:
+            document.body.scrollHeight || document.documentElement.scrollHeight,
           behavior: 'smooth',
         });
       }, 50);
@@ -283,6 +503,10 @@ export default {
 
     const ChangeThemeColor = () => {
       state.themeColor = hslToHex(Math.floor(Math.random() * 360), 75, 80);
+      if (typeof Storage !== 'undefined') {
+        // Code for localStorage/sessionStorage.
+        localStorage.setItem('bavard-themeColor', state.themeColor);
+      }
     };
 
     const hslToHex = (h, s, l) => {
@@ -311,7 +535,9 @@ export default {
         setTimeout(() => {
           window.scrollTo({
             left: 0,
-            top: document.body.scrollHeight || document.documentElement.scrollHeight,
+            top:
+              document.body.scrollHeight ||
+              document.documentElement.scrollHeight,
             behavior: 'smooth',
           });
         }, 50);
@@ -334,6 +560,7 @@ export default {
 
     return {
       inputUsername,
+      inputChatroomCode,
       state,
       Login,
       inputMessage,

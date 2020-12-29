@@ -1,7 +1,10 @@
 # Bavard
 
-a chat app
-see demo at banalite.netlify.app
+一个唠嗑软件
+[点我点我](https://banalite.netlify.app) 
+
+a chat app 
+[click me](https://banalite.netlify.app) 
 
 ## Project setup
 ```

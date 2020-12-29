@@ -1,7 +1,7 @@
 # Bavard
 
 一个唠嗑软件
-[点我点我](https://banalite.netlify.app) 
+[国内线路 点我点我](https://yilun-sun.github.io/banalite) 
 
 a chat app 
 [click me](https://banalite.netlify.app) 

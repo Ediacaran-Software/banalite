@@ -233,14 +233,51 @@ $theme-color: #b4a6f2;
         }
       }
     }
+    .emoji-list {
+      position: fixed;
+      bottom: 85px;
+      height: 200px;
+      background-color: #fff;
+      border: dashed 2px #eee;
+      margin: 0px 20% 0px 4px;
+      padding: 10px;
+      border-radius: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      overflow-y: auto;
+      .emoji {
+        line-height: 30px;
+        font-size: 24px;
+        padding: 4px;
+        margin: 4px;
+        cursor: pointer;
+      }
+    }
     footer {
       position: sticky;
       bottom: 0px;
       background-color: #fff;
-      padding: 30px;
+      padding: 20px 10px;
       box-shadow: 0px 0px 12px rgba(100, 100, 100, 0.2);
+
+      .emoji-btn {
+        flex: none;
+        margin-right: 10px;
+        margin-top: auto;
+        margin-bottom: auto;
+        width: 30px;
+        height: 30px;
+        border-radius: 15px;
+        border: none;
+        cursor: pointer;
+        &:focus {
+          border: none;
+          outline: none;
+        }
+      }
       form {
         display: flex;
+        width: 100%;
         input[type='text'] {
           flex: 1 1 100%;
           appearance: none;

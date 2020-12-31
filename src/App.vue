@@ -79,6 +79,7 @@
               ? 'message current-user'
               : 'message'
           "
+          :style="{ paddingTop: message.displayTime ? '10px' : '0px' }"
         >
           <div class="message-inner">
             <div
@@ -160,19 +161,55 @@
       </div>
     </div>
 
+    <div class="emoji-list" v-if="showEmojiPicker">
+      <div
+        v-for="emoji in emojiList"
+        :key="emoji.id"
+        class="emoji"
+        @click="() => onSelectEmoji(emoji)"
+        draggable="false"
+      >
+        {{ emoji.data }}
+      </div>
+    </div>
     <footer>
-      <form action="" @submit.prevent="SendMessage">
-        <input
-          type="text"
-          v-model="inputMessage"
-          placeholder="Write a message..."
-        />
-        <input
-          type="submit"
-          value="Send"
+      <div :style="{ display: 'flex' }">
+        <button
+          @click.prevent="toogleDialogEmoji"
+          class="emoji-btn"
           :style="{ backgroundColor: state.themeColor }"
-        />
-      </form>
+        >
+          <svg
+            t="1609384005914"
+            class="icon"
+            viewBox="0 0 1024 1024"
+            version="1.1"
+            xmlns="http://www.w3.org/2000/svg"
+            p-id="1363"
+            width="30"
+            height="30"
+            fill="#fafafa"
+          >
+            <path
+              d="M568 250.667c30.928 0 56 25.072 56 56s-25.072 56-56 56-56-25.072-56-56 25.072-56 56-56zM344 400c30.928 0 56 25.072 56 56s-25.072 56-56 56-56-25.072-56-56 25.072-56 56-56z m354.593 164.347l-8.166 10.114a259.07 259.07 0 0 1-58.461 50.895l30.787 32.788c23.19 24.697 62.011 25.919 85.895 3.524l3.557-3.491 3.936-4.684c16.551-21.574 12.48-52.481-9.094-69.033a49.253 49.253 0 0 0-13.067-7.18l-35.387-12.933z m-38.14-97.386c4.256-14.867 19.757-23.469 34.624-19.214 14.867 4.255 23.469 19.757 19.214 34.624a250.717 250.717 0 0 1-8.586 24.958l47.499 17.354a105.227 105.227 0 0 1 27.93 15.346c46.113 35.377 54.816 101.438 18.728 148.438l-6.172 7.258-5.896 5.972c-47.244 44.361-121.504 42.024-165.865-5.22l-50.315-53.568c-46.587 19.532-99.491 25.034-152.23 12.698l-25.761-6.026c-15.058-3.522-24.409-18.584-20.887-33.641 3.522-15.058 18.584-24.409 33.641-20.887l25.761 6.026c99.69 23.317 200.141-35.689 228.315-134.118zM512.326 120l-10.315 0.124c-212.242 5.295-382.015 179.097-382.015 391.178l0.129 10.687c5.294 212.242 179.096 382.015 391.178 382.015l10.687-0.129c212.242-5.294 382.015-179.096 382.015-391.178l-0.129-10.687c-5.203-208.598-173.178-376.169-380.951-381.861L512.326 120zM512 64c243.617 0 441.817 194.452 447.858 436.614L960 512c0 243.617-194.452 441.817-436.614 447.858L512 960C268.383 960 70.183 765.548 64.142 523.386L64 512C64 268.383 258.452 70.183 500.614 64.142L512 64z"
+              p-id="1364"
+            ></path>
+          </svg>
+        </button>
+        <form action="" @submit.prevent="SendMessage">
+          <input
+            type="text"
+            v-model="inputMessage"
+            placeholder="Write a message..."
+            :style="{ caretColor: state.themeColor }"
+          />
+          <input
+            type="submit"
+            value="Send"
+            :style="{ backgroundColor: state.themeColor }"
+          />
+        </form>
+      </div>
     </footer>
   </div>
 </template>
@@ -190,12 +227,14 @@
 import { reactive, onMounted, ref } from 'vue';
 import db from './db';
 import $ from 'jquery';
+import allEmojiList from './statics/emoji-list.js';
 
 export default {
   setup() {
     const inputUsername = ref('');
     const inputChatroomCode = ref('');
     const inputMessage = ref('');
+    const showEmojiPicker = ref(false);
 
     var localThemeColor = 'rgb(182, 166, 242)';
     if (typeof Storage !== 'undefined') {
@@ -215,8 +254,18 @@ export default {
       themeColor: localThemeColor,
     });
 
+    const emojiList = [];
+    (function addEmojiToList() {
+      allEmojiList.forEach((emo, index) => {
+        emojiList.push({
+          id: index + 1,
+          data: emo,
+          // src: `https://twemoji.maxcdn.com/2/72x72/${emo.toLowerCase()}.png`,
+        });
+      });
+    })();
+
     const Login = () => {
-      console.log('"', inputUsername.value, '"', inputChatroomCode.value);
       if (
         inputUsername.value !== '' &&
         inputUsername.value !== null &&
@@ -243,7 +292,6 @@ export default {
 
     const SendMessage = () => {
       const messageRef = db.database().ref(`messages-${state.chatroomCode}`);
-      console.log(state.chatroomCode);
       if (inputMessage.value === '' || inputMessage.value === null) {
         return;
       }
@@ -256,12 +304,12 @@ export default {
 
       messageRef.push(message);
       inputMessage.value = '';
+      showEmojiPicker.value = false;
     };
 
     const loadMessages = () => {
       state.messages = [];
       const messageRef = db.database().ref(`messages-${state.chatroomCode}`);
-      console.log(state.chatroomCode);
       messageRef.on('value', (snapshot) => {
         const data = snapshot.val();
         if (data == null || data == undefined) {
@@ -292,39 +340,6 @@ export default {
         scrollToBottom();
       });
     };
-
-    // onMounted(() => {
-    // 	const messageRef = db.database().ref(`messages-2`);
-    // 	console.log(state.chatroomCode);
-    // 	messageRef.on('value', (snapshot) => {
-    // 		const data = snapshot.val();
-    // 		// if (data == null || data == undefined) {
-    // 		// 	return;
-    // 		// }
-    // 		let messages = [];
-    // 		const keys = Object.keys(snapshot.val());
-    // 		for (let i = 0; i < keys.length; i++) {
-    // 			const key = keys[i];
-
-    // 			// TODO check if need to display time before this element
-    // 			const displayTime =
-    // 				i === 0
-    // 					? true
-    // 					: data[keys[i]].time - data[keys[i - 1]].time > 300000;
-
-    // 			messages.push({
-    // 				id: key,
-    // 				username: data[key].username,
-    // 				content: data[key].content,
-    // 				time: getDateString(data[key].time),
-    // 				displayTime: displayTime,
-    // 			});
-    // 		}
-
-    // 		state.messages = messages;
-    // 		scrollToBottom();
-    // 	});
-    // });
 
     const getDateString = (previousTime) => {
       var result = '';
@@ -560,6 +575,15 @@ export default {
       });
     };
 
+    const toogleDialogEmoji = () => {
+      showEmojiPicker.value = !showEmojiPicker.value;
+    };
+    const onSelectEmoji = (emoji) => {
+      inputMessage.value += emoji.data;
+      // Optional
+      // this.toogleDialogEmoji();
+    };
+
     return {
       inputUsername,
       inputChatroomCode,
@@ -570,6 +594,10 @@ export default {
       Logout,
       ChangeThemeColor,
       ScrollTo,
+      showEmojiPicker,
+      toogleDialogEmoji,
+      onSelectEmoji,
+      emojiList,
     };
   },
 };

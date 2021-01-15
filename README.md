@@ -1,10 +1,10 @@
 # Bavard
 
 一个唠嗑软件
-[国内线路 点我点我](https://yilun-sun.github.io/bavard) 
+[国内线路 点我点我](https://yilun-sun.github.io/banalite) 
 
 a chat app 
-[click me](https://bavard.netlify.app) 
+[click me](https://banalite.netlify.app) 
 
 ## Project setup
 ```

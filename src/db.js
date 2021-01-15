@@ -3,9 +3,9 @@ import 'firebase/database';
 
 const config = {
   apiKey: 'AIzaSyBsl7xp7oD7KOK0O0kZpQuqSfH9Uy3WEC4',
-  authDomain: 'bavard.firebaseapp.com',
-  projectId: 'bavard',
-  storageBucket: 'bavard.appspot.com',
+  authDomain: 'banalite.firebaseapp.com',
+  projectId: 'banalite',
+  storageBucket: 'banalite.appspot.com',
   messagingSenderId: '785951693710',
   appId: '1:785951693710:web:ff3e1f73d59bd73dace2df',
 };

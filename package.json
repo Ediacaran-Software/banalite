@@ -1,8 +1,8 @@
 {
-  "name": "bavard",
-  "version": "0.1.0",
+  "name": "banalite",
+  "version": "0.2.0",
   "private": true,
-  "homepage": "https://yilun-sun.github.io/bavard/",
+  "homepage": "https://yilun-sun.github.io/banalite/",
   "scripts": {
     "serve": "vue-cli-service serve",
     "build": "vue-cli-service build",
@@ -50,11 +50,11 @@
     "last 2 versions",
     "not dead"
   ],
-  "description": "一个唠嗑软件 [国内线路 点我点我](https://yilun-sun.github.io/bavard)",
+  "description": "一个唠嗑软件 [国内线路 点我点我](https://yilun-sun.github.io/banalite)",
   "main": "main.js",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Yilun-Sun/bavard.git"
+    "url": "git+https://github.com/Yilun-Sun/banalite.git"
   },
   "keywords": [
     "chatroom"
@@ -62,6 +62,6 @@
   "author": "Yilun Sun",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Yilun-Sun/bavard/issues"
+    "url": "https://github.com/Yilun-Sun/banalite/issues"
   }
 }
